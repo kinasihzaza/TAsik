@@ -5,10 +5,7 @@ var connection  = require('../database.js');
 var rc4         = require('arc4');
 var xxtea       = require('../xxtea/xxtea.js');
 var md5         = require('md5');
-// var globalInbox = [inbox = {
-//                     'msg_source':msg_source,
-//                     'msg_time':msg_time,
-//                     }];
+var moment      = require('moment');
 
 router.get("/", require('../middleware/auth.js'), function(req,res){
     console.log("MASUK FUNGSI GET /INBOX");
@@ -20,15 +17,10 @@ router.get("/", require('../middleware/auth.js'), function(req,res){
     console.log(query);
 
     connection.query(query,function(err,rows,fields){
-        // console.log("masuk sini ga?");
         if(err) {
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {
-            // console.log("masuk sini ga");
-            //res.json({"Error" : false, "Message" : "Success", "Users" : rows});
             for (var i = 0; i < rows.length; i++) {
-                // console.log("row length: ", rows.length);
-                // console.log("i: ", i);
                 // Create an object to save current row's data
                 var login = req.session.pisang.user_email;
                 var getTime = '' + rows[i].msg_time;
@@ -53,17 +45,9 @@ router.get("/", require('../middleware/auth.js'), function(req,res){
             'login'    : req.session.pisang.user_email,
             'loginList': loginList
         });
-
-        console.log(inbox);
     });
 });
-//WOI baca console lognya, harusnya kan direstart baru bisa. gimana sih. kalo engga masih running code yang lama. Sikodok
-//apasih orang nodemon, sekali di svae ngrestart sendiri
-//jangan pake nodemon. ngikut gue.
 router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req, res, next) {
-    // console.log(req.params.key_sender);
-    // const request_params_key = decodeURI(req.params.key_sender);
-
     console.log("MASUK FUNGSI GET /VIEWINBOX");
     var viewInbox = [];
 
@@ -76,39 +60,28 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
     console.log(req.params);
     console.log("batas bawah");
 
-    // console.log(viewInbox);
-
     connection.query(query,function(err, rows, fields){
         if(err) {
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {    
-            // const request_params_key = decodeURI(req.params.key_sender);
             const db_message_plain = rows[0].msg_plain;
-            //console.log(rows);
             /*Modul For Decrypt By Key*/
-            //const key_from_recepient_url = req.params.key_sender;
+
             const key_from_sender_db = rows[0].key_sender;
-            // console.log("COMPARE KEY :: >>>> "+key_from_recepient_url);
+
             console.log("KEY :: >>>> "+key_from_sender_db);
-            // var flagComparationBetweenURLandDB = false;
-            
-            // if(key_from_recepient_url == key_from_sender_db){
-            //     flagComparationBetweenURLandDB=true;
-            // }
-            // //var cipher_config = rc4('arc4', String(key_from_recepient_url));
             key = key_from_sender_db;
-            //var e = xxtea.decryptToString(db_message_plain,key);
-            // var e = db_message_plain;
             
             str1 = rows[0].msg_source;
             str2 = rows[0].msg_target;
-            str3 = "TA2017";
+            str3 = moment(rows[0].msg_time).format("YYYY-MM-DD HH:mm:ss");
+            str4 = "TA2017";
 
             console.log("string 1 = " + str1);
             console.log("string 2 = " + str2);
-            console.log("string 3 = " + str3);
+             console.log("string 4 = " + str4);
 
-            var stringConcat = str1.concat(str2, str3);
+            var stringConcat = str1.concat(str2, str3, str4);
 
             console.log("string concat = " + stringConcat);
 
@@ -125,14 +98,6 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
             console.log("string concat sorted and hashed = " + md5keySort);
 
             var e = xxtea.decryptToString(db_message_plain,md5keySort);
-
-            // if(flagComparationBetweenURLandDB){
-            //     var e = xxtea.decryptToString(db_message_plain,key);
-            // }
-            // else{
-            //     var e = db_message_plain;
-            // }
-
             /*End Of Modul*/
 
             var getTime = '' + rows[0].msg_time;
@@ -170,75 +135,69 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
                         viewAttachment.push(viewAttachment2);
 
                         console.log(viewAttachment2);
-                         // else{
-                         //    console.log("falseee");
-                         //    global.viewAttachment2 = {
-                         //    'id_file'    : '',
-                         //    'path_file'  : '',
-                         //    'size_file'  : ''
-                         //    }
-                    
-                        // global.viewAttachment2 = {
-                        //     'id_file'    : rows[0].id_file,
-                        //     'path_file'  : rows[0].path_file,
-                        //     'size_file'  : rows[0].size_file
-                        // }
-                        
-
                         res.render('viewInbox', {
                             'viewInbox': viewInbox,
                             'viewAttachment' : viewAttachment,
-                            'login': req.session.pisang.user_email
+                            'login': 'admin4@gmail.com'
                         }); 
                     }
 
                     res.render('viewInbox', {
                     'viewInbox': viewInbox,
                     'viewAttachment' : viewAttachment,
-                    'login': req.session.pisang.user_email
+                    'login': 'admin4@gmail.com'
                     });
 
                     } 
                 
             });
-        }
-    
-        // res.render('viewInbox', {
-        //     'viewInbox': viewInbox,
-        //     'viewAttachment' : viewAttachment,
-        //     'login': req.session.pisang.user_email
-        // });   
+        }  
     });
 
 }).post("/viewInbox", require('../middleware/auth.js'), function(req, res, next){
     console.log("MASUK POST VIEWINBOX 1");
-    //str=req.body.msg_plain;
-    var key = req.body.key_sender;
-    var source    = req.session.pisang.user_email;
-    var target    = viewInbox2.msg_source;
-    var str     = req.body.msg_plain; 
+    myDate =  moment().format("YYYY-MM-DD HH:mm:ss");
 
-    console.log("MASUK POST VIEWINBOX 2");
-    
+    str1vi = req.session.pisang.user_email;
+    str2vi = viewInbox2.msg_source;
+    str3vi = myDate;
+    str4vi = "TA2017";
+
+    console.log("string 1 = " + str1vi);
+    console.log("string 2 = " + str2vi);
+    console.log("string 3 = " + str3vi);
+    console.log("string 4 = " + str4vi);
+
+    var stringConcat = str1vi.concat(str2vi, str3vi, str4vi);
+
+    console.log("string concat = " + stringConcat);
+
+    var sortAlphabets = function(stringConcat) {
+    return stringConcat.split('').sort().join('');
+    };
+
+    var keySort = sortAlphabets(stringConcat);
+
+    console.log("string concat sorted = " + keySort);
+
+    var md5keySort = md5(keySort);
+
+    console.log("string concat sorted and hashed = " + md5keySort);
+
+    str = req.body.msg_plain;
+    key = md5keySort;
     const db_message_plain = req.body.msg_plain;
-    console.log(str);
-    console.log(key);
-    console.log(req.body.key_sender);
-
     var d = xxtea.encryptToString(str,key);
 
-    console.log("MASUK POST VIEWINBOX 3");
-    console.log("KEY COMPOSE : "+req.body.key_sender);
+    console.log("KEY COMPOSE : "+key);
     console.log("Plain TEXT  : " +req.body.msg_plain);
     console.log("HEXXX ->>>>>>>>> : "+String(d));
 
-    // var source    = req.session.pisang.user_email;
-    // var target    = viewInbox2.msg_source;
-    // var pesan     = req.body.msg_plain; 
-
+    var d = xxtea.encryptToString(str,key);
     var query  = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
-    var table  = ["message","msg_source","msg_target","key_sender","msg_plain",source,target,key,d];
+    var table  = ["message","msg_source","msg_target","msg_plain","msg_time",str1vi,str2vi,d,myDate];
     query2  = mysql.format(query,table);
+    
     console.log(query2);
     console.log(table)
     console.log("MASUK POST VIEWINBOX 4");
@@ -253,33 +212,6 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
         }
     });
 
-}).post("/inputKey", require('../middleware/auth.js'), function(req, res, next){
-
-    // var source    = req.session.pisang.user_email;
-    // var target    = viewInbox2.msg_source;
-    // var pesan     = req.body.msg_plain; 
-
-    console.log("MASUK FUNGSI PUT /VIEWINBOX");
-
-    var query  = "SELECT * FROM ?? WHERE ?? = ?";
-    var table  = ["message","key_sender",req.body.key_sender, "msg_id", req.body.msg_id];
-
-    // var query  = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-    // var table  = ["message","key_recepient",req.body.key_sender, "msg_id", req.body.msg_id];
-    
-    query  = mysql.format(query,table);
-    console.log(query);
-    console.log("inikuncinya");
-    console.log(req.body.key_sender);
-
-    connection.query(query,function(err,rows,fields){
-        if(err) {
-            res.json({"Error" : true, "Message" : "Error executing MySQL query"});
-            console.log(rows);
-        } else{
-            res.redirect("/inbox/viewInbox/" + req.body.msg_id + "/" + req.body.key_sender);
-        }
-    });
 });
 
 router.get("/download/:id_file", require('../middleware/auth.js'), function(req,res){
@@ -293,14 +225,6 @@ router.get("/download/:id_file", require('../middleware/auth.js'), function(req,
 
 
     res.download(file);
-    // var filename = path.basename(file);
-    // var mimetype = mime.lookup(file);
-    // console.log(file);
-    // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    // res.setHeader('Content-type', mimetype);
-
-    // var filestream = fs.createReadStream(file);
-    // filestream.pipe(res);
 });
 
 

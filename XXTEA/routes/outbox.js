@@ -4,6 +4,7 @@ var router      = express.Router();
 var connection  = require('../database.js');
 var xxtea       = require('../xxtea/xxtea.js');
 var md5         = require('md5');
+var moment     = require('moment');
 
 router.get("/", require('../middleware/auth.js'), function(req,res){
     console.log("MASUK FUNGSI GET /OUTBOX");
@@ -14,10 +15,8 @@ router.get("/", require('../middleware/auth.js'), function(req,res){
 
     connection.query(query,function(err,rows,fields){
         if(err) {
-            //console.log("MASUK IF ERROR QUERY");
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {
-            // res.json({"Error" : false, "Message" : "Success", "Users" : rows});
             for (var i = 0; i < rows.length; i++) {
                 console.log("row length: ", rows.length);
                 console.log("i: ", i);
@@ -62,41 +61,24 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {  
             console.log("MASUK FUNGSI GET /VIEWOUTBOX 2");
-
-
-
-            // const request_params_key = decodeURI(req.params.key_sender);
             const db_message_plain = rows[0].msg_plain;
-            //console.log(rows);
             /*Modul For Decrypt By Key*/
-            //const key_from_recepient_url = req.params.key_sender;
             const key_from_sender_db = rows[0].key_sender;
-            //console.log("COMPARE KEY_URL :: >>>> "+key_from_recepient_url);
             console.log("KEY :: >>>> "+key_from_sender_db);
-            //console.log("COMPARE DB_MSG_PLAIN :: >>>> "+db_message_plain);
-            
-            // var flagComparationBetweenURLandDB = false;
-            
-            // if(key_from_recepient_url === key_from_sender_db){
-            //     flagComparationBetweenURLandDB=true;
-            // }
-            //var cipher_config = rc4('arc4', String(key_from_recepient_url));
-            //var e = cipher_config.decodeString(db_message_plain);
-            //var e = cipher.decodeString(d);
             key = key_from_sender_db;
-            //console.log("keynya adalah "+key);
-            //var e = xxtea.decryptToString(db_message_plain,key);
             /*End Of Modul*/
 
             str1 = rows[0].msg_source;
             str2 = rows[0].msg_target;
-            str3 = "TA2017";
+            str3 = moment(rows[0].msg_time).format("YYYY-MM-DD HH:mm:ss");
+            str4 = "TA2017";
 
             console.log("string 1 = " + str1);
             console.log("string 2 = " + str2);
             console.log("string 3 = " + str3);
+            console.log("string 4 = " + str4);
 
-            var stringConcat = str1.concat(str2, str3);
+            var stringConcat = str1.concat(str2, str3, str4);
 
             console.log("string concat = " + stringConcat);
 
@@ -113,14 +95,6 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
             console.log("string concat sorted and hashed = " + md5keySort);
 
             var e = xxtea.decryptToString(db_message_plain,md5keySort);
-
-
-
-
-
-
-
-            //return res.json({"Error" : false, "Message" : "Success", "users" : rows});
             var getTime = '' + rows[0].msg_time;
             var time = getTime.substr(0,24);
             global.viewOutbox2 = {
@@ -168,14 +142,7 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
                     }); 
                 }
             });  
-        }
- 
-        // res.render('viewOutbox', {
-        //     'viewOutbox': viewOutbox,
-        //     'viewAttachment' : viewAttachment,
-        //     'login': req.session.pisang.user_email
-        // });   
-
+        }  
     });
 });
 
@@ -188,16 +155,7 @@ router.get("/download/:id_file", require('../middleware/auth.js'), function(req,
 
     var file = __dirname + '/..' + viewAttachment2.path_file;
 
-
     res.download(file);
-    // var filename = path.basename(file);
-    // var mimetype = mime.lookup(file);
-    // console.log(file);
-    // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    // res.setHeader('Content-type', mimetype);
-
-    // var filestream = fs.createReadStream(file);
-    // filestream.pipe(res);
 });
 
 module.exports = router;

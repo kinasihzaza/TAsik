@@ -5,13 +5,9 @@ var connection  = require('../database.js');
 var CryptoJS    = require("crypto-js");
 var rc4         = require('../encrypt/RC4Cipher.js');
 var utf8        = require('utf8');
-// var rc4 = require('arc4');
 var md5         = require('md5');
+var moment      = require('moment');
 
-// var globalInbox = [inbox = {
-//                     'msg_source':msg_source,
-//                     'msg_time':msg_time,
-//                     }];
 
 router.get("/", require('../middleware/auth.js'), function(req,res){
     console.log("MASUK FUNGSI GET /INBOX");
@@ -23,15 +19,10 @@ router.get("/", require('../middleware/auth.js'), function(req,res){
     console.log(query);
 
     connection.query(query,function(err,rows,fields){
-        // console.log("masuk sini ga?");
         if(err) {
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {
-            // console.log("masuk sini ga");
-            //res.json({"Error" : false, "Message" : "Success", "Users" : rows});
             for (var i = 0; i < rows.length; i++) {
-                // console.log("row length: ", rows.length);
-                // console.log("i: ", i);
                 // Create an object to save current row's data
                 var login = req.session.pisang.user_email;
                 var getTime = '' + rows[i].msg_time;
@@ -56,61 +47,43 @@ router.get("/", require('../middleware/auth.js'), function(req,res){
             'login'    : req.session.pisang.user_email,
             'loginList': loginList
         });
-
-        // console.log(inbox);
     });
 });
-//WOI baca console lognya, harusnya kan direstart baru bisa. gimana sih. kalo engga masih running code yang lama. Sikodok
-//apasih orang nodemon, sekali di svae ngrestart sendiri
-//jangan pake nodemon. ngikut gue.
 router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req, res, next) {
-    // console.log(req.params.key_sender);
-    // const request_params_key = decodeURI(req.params.key_sender);
-
     console.log("MASUK FUNGSI GET /VIEWINBOX");
     var viewInbox = [];
 
     var query = "SELECT * FROM ?? WHERE ?? = ?";
     var table = ["message", "msg_id", req.params.msg_id];
     query     = mysql.format(query,table);
+    
     console.log(query);
     console.log(req.params.msg_id);
     console.log("batas atas");
     console.log(req.params);
     console.log("batas bawah");
 
-    // console.log(viewInbox);
-
     connection.query(query,function(err, rows, fields){
         if(err) {
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {    
-            // const request_params_key = decodeURI(req.params.key_sender);
-            const db_message_plain       = rows[0].msg_plain;
-            //console.log(rows);
+           const db_message_plain       = rows[0].msg_plain;
+
             /*Modul For Decrypt By Key*/
-            // const key_from_recepient_url = req.params.key_sender;
             const key_from_sender_db     = rows[0].key_sender;
-            // console.log("COMPARE KEY FROM URL :: >>>> "+key_from_recepient_url);
-            // console.log("KEY :: >>>> "+key_from_sender_db);
-            // var flagComparationBetweenURLandDB = false;
-
-            // if(key_from_recepient_url == key_from_sender_db) {
-            //     flagComparationBetweenURLandDB=true;
-            //     console.log("MASUK SINI");
-            // }
-
             var cipher_config = key_from_sender_db
 
             str1 = rows[0].msg_source;
             str2 = rows[0].msg_target;
-            str3 = "TA2017";
+            str3 = moment(rows[0].msg_time).format("YYYY-MM-DD HH:mm:ss");
+            str4 = "TA2017";
 
             console.log("string 1 = " + str1);
             console.log("string 2 = " + str2);
             console.log("string 3 = " + str3);
+            console.log("string 4 = " + str4);
 
-            var stringConcat = str1.concat(str2, str3);
+            var stringConcat = str1.concat(str2, str3, str4);
 
             console.log("string concat = " + stringConcat);
 
@@ -126,17 +99,10 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
 
             console.log("string concat sorted and hashed = " + md5keySort);
 
-
-
-            //var cipher_config = key_from_sender_db;
-
             var plaintext     = CryptoJS.RC4.decrypt(db_message_plain.toString(), md5keySort.toString()).toString(CryptoJS.enc.Utf8);
-            
 
             console.log("MASUK SINI bawah dekrip");
-            // var e = cipher_config.decodeString(db_message_plain);
-            //var e = cipher.decodeString(d);
-
+            
             /*End Of Modul*/
             var getTime = '' + rows[0].msg_time;
             var time = getTime.substr(0,24);
@@ -169,19 +135,6 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
                         'path_file'  : rows[0].path_file,
                         'size_file'  : rows[0].size_file
                         }
-                        //  else{
-                        //     console.log("falseee");
-                        //     global.viewAttachment2 = {
-                        //     'id_file'    : '',
-                        //     'path_file'  : '',
-                        //     'size_file'  : ''
-                        //     }
-                        // }
-                        // global.viewAttachment2 = {
-                        //     'id_file'    : rows[0].id_file,
-                        //     'path_file'  : rows[0].path_file,
-                        //     'size_file'  : rows[0].size_file
-                        // }
                         viewAttachment.push(viewAttachment2);
 
                         console.log(viewAttachment2);
@@ -200,23 +153,49 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
                     });    
                 }
             });
-        }
-    
-        // res.render('viewInbox', {
-        //     'viewInbox': viewInbox,
-        //     'viewAttachment' : viewAttachment,
-        //     'login': req.session.pisang.user_email
-        // });   
+        } 
     });
 
 }).post("/viewInbox", require('../middleware/auth.js'), function(req, res, next){
 
-    var source    = req.session.pisang.user_email;
-    var target    = viewInbox2.msg_source;
-    var pesan     = req.body.msg_plain; 
+    myDate =  moment().format("YYYY-MM-DD HH:mm:ss");
 
-    var query  = "INSERT INTO ??(??,??,??) VALUES (?,?,?)";
-    var table  = ["message","msg_source","msg_target","msg_plain",source,target,pesan];
+
+    str1vi = req.session.pisang.user_email;
+    str2vi = viewInbox2.msg_source;
+    str3vi = myDate;
+    str4vi = "TA2017";
+
+    console.log("string 1 = " + str1vi);
+    console.log("string 2 = " + str2vi);
+    console.log("string 3 = " + str3vi);
+    console.log("string 4 = " + str4vi);
+
+    var stringConcat = str1vi.concat(str2vi, str3vi, str4vi);
+
+    console.log("string concat = " + stringConcat);
+
+    var sortAlphabets = function(stringConcat) {
+    return stringConcat.split('').sort().join('');
+    };
+
+    var keySort = sortAlphabets(stringConcat);
+
+    console.log("string concat sorted = " + keySort);
+
+    var md5keySort = md5(keySort);
+
+    console.log("string concat sorted and hashed = " + md5keySort);
+
+    const db_message_plain  = req.body.msg_plain;
+    var cipher_config       = md5keySort;
+    var ciphertext          = CryptoJS.RC4.encrypt(db_message_plain, cipher_config);
+    
+    console.log("INI CIPHERNYA >>>>>> " + ciphertext);
+    console.log("INI KEYNYA  >>>>>> " + cipher_config);
+
+    var query  = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
+    var table  = ["message","msg_source","msg_target","msg_plain","msg_time",str1vi,str2vi,ciphertext.toString(),myDate];
     
     query  = mysql.format(query,table);
     console.log(query);
@@ -230,33 +209,6 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
         }
     });
 
-}).post("/inputKey", require('../middleware/auth.js'), function(req, res, next){
-
-    // var source    = req.session.pisang.user_email;
-    // var target    = viewInbox2.msg_source;
-    // var pesan     = req.body.msg_plain; 
-
-    console.log("MASUK FUNGSI PUT /VIEWINBOX");
-
-    var query  = "SELECT * FROM ?? WHERE ?? = ?";
-    var table  = ["message","key_sender",req.body.key_sender, "msg_id", req.body.msg_id];
-
-    // var query  = "UPDATE ?? SET ?? = ? WHERE ?? = ?";
-    // var table  = ["message","key_recepient",req.body.key_sender, "msg_id", req.body.msg_id];
-    
-    query  = mysql.format(query,table);
-    console.log(query);
-    console.log("inikuncinya");
-    console.log(req.body.key_sender);
-
-    connection.query(query,function(err,rows,fields){
-        if(err) {
-            res.json({"Error" : true, "Message" : "Error executing MySQL query"});
-            console.log(rows);
-        } else{
-            res.redirect("/inbox/viewInbox/" + req.body.msg_id + "/" + req.body.key_sender);
-        }
-    });
 });
 
 router.get("/download/:id_file", require('../middleware/auth.js'), function(req,res){
@@ -268,16 +220,7 @@ router.get("/download/:id_file", require('../middleware/auth.js'), function(req,
 
     var file = __dirname + '/..' + viewAttachment2.path_file;
 
-
     res.download(file);
-    // var filename = path.basename(file);
-    // var mimetype = mime.lookup(file);
-    // console.log(file);
-    // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    // res.setHeader('Content-type', mimetype);
-
-    // var filestream = fs.createReadStream(file);
-    // filestream.pipe(res);
 });
 
 

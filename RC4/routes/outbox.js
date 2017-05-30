@@ -1,10 +1,11 @@
-var express = require('express');
-var mysql = require('mysql');
-var router = express.Router();
+var express    = require('express');
+var mysql      = require('mysql');
+var router     = express.Router();
 var connection = require('../database.js');
-var CryptoJS    = require("crypto-js");
-var utf8        = require('utf8');
-var md5         = require('md5');
+var CryptoJS   = require("crypto-js");
+var utf8       = require('utf8');
+var md5        = require('md5');
+var moment     = require('moment');
 
 router.get("/", require('../middleware/auth.js'), function(req,res){
     console.log("MASUK FUNGSI GET /OUTBOX");
@@ -15,10 +16,8 @@ router.get("/", require('../middleware/auth.js'), function(req,res){
 
     connection.query(query,function(err,rows,fields){
         if(err) {
-            //console.log("MASUK IF ERROR QUERY");
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {
-            // res.json({"Error" : false, "Message" : "Success", "Users" : rows});
             for (var i = 0; i < rows.length; i++) {
                 console.log("row length: ", rows.length);
                 console.log("i: ", i);
@@ -64,25 +63,18 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
 
             const db_message_plain  = rows[0].msg_plain;
             const cipher_config       = rows[0].key_sender;
-            // var ciphertext          = CryptoJS.RC4.encrypt(db_message_plain, cipher_config);
-            // var plaintext           = CryptoJS.RC4.decrypt(ciphertext, cipher_config);
-            // var dekrip              = db_message_plain.toString();
-            // var plaintext           = CryptoJS.RC4.decrypt(dekrip, cipher_config).toString(CryptoJS.enc.Utf8);
-
-            // console.log("INI PESAN DARI DB    >>>>>> " + db_message_plain);
-            // console.log("INI KEY DARI DB      >>>>>> " + cipher_config);
-            // console.log("INI PESAN DI STRING  >>>>>> " + dekrip);
-            // console.log("INI HASIL DEKRIP     >>>>>> " + plaintext);
-
+            
             str1 = rows[0].msg_source;
             str2 = rows[0].msg_target;
-            str3 = "TA2017";
+            str3 = moment(rows[0].msg_time).format("YYYY-MM-DD HH:mm:ss");
+            str4 = "TA2017";
 
             console.log("string 1 = " + str1);
             console.log("string 2 = " + str2);
             console.log("string 3 = " + str3);
+            console.log("string 4 = " + str4);
 
-            var stringConcat = str1.concat(str2, str3);
+            var stringConcat = str1.concat(str2, str3, str4);
 
             console.log("string concat = " + stringConcat);
 
@@ -98,26 +90,9 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
 
             console.log("string concat sorted and hashed = " + md5keySort);
 
-
             var dekrip              = db_message_plain.toString();
             var plaintext           = CryptoJS.RC4.decrypt(dekrip, md5keySort).toString(CryptoJS.enc.Utf8);
 
-
-            // var flagComparationBetweenURLandDB = false;
-
-            // if(cipher_config) {
-            //     flagComparationBetweenURLandDB = true;
-            // }
-
-            // var cipher_config = key_from_sender_db;
-            // var plaintext     = CryptoJS.RC4.decrypt(db_message_plain, cipher_config);
-
-            // console.log("MESSAGE :: >>>> " + db_message_plain);
-            // console.log("KEY     :: >>>> " + key_from_sender_db);
-            // console.log("CIPHER  :: >>>> " + cipher_config);
-            // console.log("DEKRIP  :: >>>> " + plaintext);
-
-            //return res.json({"Error" : false, "Message" : "Success", "users" : rows});
             var getTime = '' + rows[0].msg_time;
             var time = getTime.substr(0,24);
 
@@ -167,13 +142,6 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
                 }
             });  
         }
- 
-        // res.render('viewOutbox', {
-        //     'viewOutbox': viewOutbox,
-        //     'viewAttachment' : viewAttachment,
-        //     'login': req.session.pisang.user_email
-        // });   
-
     });
 });
 
@@ -186,16 +154,7 @@ router.get("/download/:id_file", require('../middleware/auth.js'), function(req,
 
     var file = __dirname + '/..' + viewAttachment2.path_file;
 
-
     res.download(file);
-    // var filename = path.basename(file);
-    // var mimetype = mime.lookup(file);
-    // console.log(file);
-    // res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    // res.setHeader('Content-type', mimetype);
-
-    // var filestream = fs.createReadStream(file);
-    // filestream.pipe(res);
 });
 
 module.exports = router;

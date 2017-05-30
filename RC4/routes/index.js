@@ -5,20 +5,9 @@ var connection = require('../database.js');
 
 /* GET home page. */
     router.get("/",function(req,res){
-        //res.json({"Message" : "Hello World !"});
         console.log("MASUK FUNGSI GET /");
         res.render('index');
     });
-
-    // router.get('/coba1', function(req, res){
-    //     req.session.pisang = "asd";
-    //     res.send("asd");
-    // });
-
-    // router.get('/coba2', function(req, res){
-    //     req.session.pisang = "asd";
-    //     res.send(req.session.pisang);
-    // })
 
 
     router.get("/login", function(req, res){
@@ -37,12 +26,8 @@ var connection = require('../database.js');
             if(err) {
                 res.json({"Error" : true, "Message" : "Error executing MySQL query"});
             } else if(rows.length){
-                //res.json(rows);
                 req.session.pisang = rows[0];
-                // res.json(req.session.pisang);
-                // res.json({"Error" : false, "Message" : "Success", "Users" : rows});
                 res.redirect("/inbox");
-                // console.log(req.session);
             }
             else {
                 res.redirect("/login");

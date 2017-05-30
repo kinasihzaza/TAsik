@@ -40,7 +40,7 @@ html(lang='en')
           .navbar-header
             button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
               
-            a.navbar-brand(href='#') E-Surat
+            a.navbar-brand(href='/inbox') E-Surat
               i.fa.fa-envelope-square.fa-fw(style='margin-left:-90px')
             a.navbar-brand(style='color:#fff; margin-left:855px; font-size: 14px') #{login}
             a.navbar-brand(href='/logout') |  Logout
@@ -76,13 +76,11 @@ html(lang='en')
                     
               .panel-footer
                 form#reply.form-horizontal(role='form', action='/inbox/viewInbox', method='post')
-                  .form-group(style='margin-top: 2%;')
-                    .col-md-9
-                      input#btn-input.form-control.input-sm(type='text', placeholder='Reply your message here...', name='msg_plain')
-                    .col-md-2
-                      input#btn-input.form-control.input-sm(required="true", type='text', placeholder='Key..', name='key_sender')
-                    .col-md-1
-                      button#btn-chat.btn.btn-warning.btn-sm(type='submit', style='background: #C2185B; margin-left: -35%;')
+                  .form-group
+                  .input-group
+                    input#btn-input.form-control.input-sm(type='text', placeholder='Reply your message here...', name='msg_plain')
+                    span.input-group-btn
+                      button#btn-chat.btn.btn-warning.btn-sm(type='submit', style='background: #C2185B')
                         | Send
                       //- .input-group
                       //-   input#btn-input.form-control.input-sm(type='text', placeholder='Reply your message here...', name='msg_plain')

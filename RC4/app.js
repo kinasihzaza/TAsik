@@ -74,17 +74,17 @@ app.use(function(err, req, res, next) {
   });
 });
 
-// app.listen(8080, function(){
-//   console.log("Listening on port " + 8080);
-// });
+app.listen(3030, function(){
+  console.log("Listening on port " + 3030);
+});
 
 var options = {
     key: fs.readFileSync("server.key"),
     cert: fs.readFileSync("server.crt")
 };
 
-https.createServer(options, app).listen(8000, function() {
-    console.log("Listening on port " + 8000);
+https.createServer(options, app).listen(3000, function() {
+    console.log("HTTPS: listening on port " + 3000);
 });
 
 module.exports = app;
