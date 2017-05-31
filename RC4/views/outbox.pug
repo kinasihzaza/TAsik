@@ -65,24 +65,13 @@ html(lang='en')
                       th
                   tbody(style='color: #000')
                     for outbox in outboxList
-      
                       tr(style='height: 49px')
                         form#login.form-horizontal(role='form', action='/outbox/viewOutbox/', method='post')
                         td(style='width: 80%; vertical-align: middle')
                           a(href='/outbox/viewOutbox/'+ outbox.msg_id+'/', style='text-decoration: none; color: #000; font-family: Serif')
-                            i.fa.fa-envelope-o.fa-fw(style='color:#000') &nbsp&nbsp
+                            i.fa.fa-envelope.fa-fw(style='color:#000') &nbsp&nbsp
                             | #{outbox.msg_target}
                         td.text-muted.small(style='vertical-align: middle') #{outbox.msg_time}
-
-
-
-                      // tr(style='height: 49px')
-                      //   form#login.form-horizontal(role='form', action='/outbox/viewOutbox/', method='post')
-                      //   td(style='width: 80%; vertical-align: middle')
-                      //     a(href='/outbox/viewOutbox/'+ outbox.msg_id + '/' + outbox.key_sender, style='text-decoration: none; color: #000; font-family: Serif')
-                      //       i.fa.fa-envelope-o.fa-fw(style='color:#000') &nbsp&nbsp
-                      //       | #{outbox.msg_target}
-                      //   td.text-muted.small(style='vertical-align: middle') #{outbox.msg_time}
 
                     //- a.list-group-item(href='/outbox/viewOutbox/'+ outbox.msg_id)
                     //-   i.fa.fa-envelope-o.fa-fw
