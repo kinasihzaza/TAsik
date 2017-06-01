@@ -4,7 +4,7 @@ var router     = express.Router();
 var connection = require('../database.js');
 var CryptoJS   = require("crypto-js");
 var utf8       = require('utf8');
-var md5        = require('md5');
+var sha1        = require('sha1');
 var moment     = require('moment');
 
 router.get("/", require('../middleware/auth.js'), function(req,res){
@@ -86,12 +86,12 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
 
             console.log("string concat sorted = " + keySort);
 
-            var md5keySort = md5(keySort);
+            var shakeySort = sha1(keySort);
 
-            console.log("string concat sorted and hashed = " + md5keySort);
+            console.log("string concat sorted and hashed = " + shakeySort);
 
             var dekrip              = db_message_plain.toString();
-            var plaintext           = CryptoJS.RC4.decrypt(dekrip, md5keySort).toString(CryptoJS.enc.Utf8);
+            var plaintext           = CryptoJS.RC4.decrypt(dekrip, shakeySort).toString(CryptoJS.enc.Utf8);
 
             var getTime = '' + rows[0].msg_time;
             var time = getTime.substr(0,24);

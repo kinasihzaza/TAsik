@@ -4,8 +4,8 @@ var now = require("performance-now");
 
 var xxtea        = require("./xxtea.js");
 
-var str = "ASJDKJSDKJASKJDKSAJDKJASKJDKSAJDWHEQWPEOIREWYUMDNFB";
-var key = "KUNCIGILA";
+var str = "Kabel UTP memiliki beberapa warna di dalamnya, tujuan pemberian warna ini agar dalam pengiriman data dan transmisi paket dapat diminimalisisr adanya lost packet dan dapat mempercepat pengiriman paket-paket tersebut";
+var key = "TA2017!";
 
 var t0 = now();
 var encrypt_data = xxtea.encryptToString(str, key);

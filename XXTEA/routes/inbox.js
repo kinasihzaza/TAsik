@@ -4,7 +4,7 @@ var router      = express.Router();
 var connection  = require('../database.js');
 var rc4         = require('arc4');
 var xxtea       = require('../xxtea/xxtea.js');
-var md5         = require('md5');
+var sha1         = require('sha1');
 var moment      = require('moment');
 
 router.get("/", require('../middleware/auth.js'), function(req,res){
@@ -93,11 +93,11 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
 
             console.log("string concat sorted = " + keySort);
 
-            var md5keySort = md5(keySort);
+            var shakeySort = sha1(keySort);
 
-            console.log("string concat sorted and hashed = " + md5keySort);
+            console.log("string concat sorted and hashed = " + shakeySort);
 
-            var e = xxtea.decryptToString(db_message_plain,md5keySort);
+            var e = xxtea.decryptToString(db_message_plain,shakeySort);
             /*End Of Modul*/
 
             var getTime = '' + rows[0].msg_time;
@@ -180,12 +180,12 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
 
     console.log("string concat sorted = " + keySort);
 
-    var md5keySort = md5(keySort);
+    var shakeySort = sha1(keySort);
 
-    console.log("string concat sorted and hashed = " + md5keySort);
+    console.log("string concat sorted and hashed = " + shakeySort);
 
     str = req.body.msg_plain;
-    key = md5keySort;
+    key = shakeySort;
     const db_message_plain = req.body.msg_plain;
     var d = xxtea.encryptToString(str,key);
 

@@ -5,7 +5,7 @@ var connection  = require('../database.js');
 var CryptoJS    = require("crypto-js");
 var rc4         = require('../encrypt/RC4Cipher.js');
 var utf8        = require('utf8');
-var md5         = require('md5');
+var sha1         = require('sha1');
 var moment      = require('moment');
 
 
@@ -95,11 +95,11 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
 
             console.log("string concat sorted = " + keySort);
 
-            var md5keySort = md5(keySort);
+            var shakeySort = sha1(keySort);
 
-            console.log("string concat sorted and hashed = " + md5keySort);
+            console.log("string concat sorted and hashed = " + shakeySort);
 
-            var plaintext     = CryptoJS.RC4.decrypt(db_message_plain.toString(), md5keySort.toString()).toString(CryptoJS.enc.Utf8);
+            var plaintext     = CryptoJS.RC4.decrypt(db_message_plain.toString(), shakeySort.toString()).toString(CryptoJS.enc.Utf8);
 
             console.log("MASUK SINI bawah dekrip");
             
@@ -183,12 +183,12 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
 
     console.log("string concat sorted = " + keySort);
 
-    var md5keySort = md5(keySort);
+    var shakeySort = sha1(keySort);
 
-    console.log("string concat sorted and hashed = " + md5keySort);
+    console.log("string concat sorted and hashed = " + shakeySort);
 
     const db_message_plain  = req.body.msg_plain;
-    var cipher_config       = md5keySort;
+    var cipher_config       = shakeySort;
     var ciphertext          = CryptoJS.RC4.encrypt(db_message_plain, cipher_config);
     
     console.log("INI CIPHERNYA >>>>>> " + ciphertext);

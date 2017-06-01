@@ -3,7 +3,7 @@ var mysql       = require('mysql');
 var router      = express.Router();
 var connection  = require('../database.js');
 var xxtea       = require('../xxtea/xxtea.js');
-var md5         = require('md5');
+var sha1         = require('sha1');
 var moment     = require('moment');
 
 router.get("/", require('../middleware/auth.js'), function(req,res){
@@ -90,11 +90,11 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
 
             console.log("string concat sorted = " + keySort);
 
-            var md5keySort = md5(keySort);
+            var shakeySort = sha1(keySort);
 
-            console.log("string concat sorted and hashed = " + md5keySort);
+            console.log("string concat sorted and hashed = " + shakeySort);
 
-            var e = xxtea.decryptToString(db_message_plain,md5keySort);
+            var e = xxtea.decryptToString(db_message_plain,shakeySort);
             var getTime = '' + rows[0].msg_time;
             var time = getTime.substr(0,24);
             global.viewOutbox2 = {
