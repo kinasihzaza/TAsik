@@ -65,7 +65,6 @@ html(lang='en')
                       th
                   tbody(style='color: #000')
                     for inbox in inboxList
-
                       tr(style='height: 49px')
                         form#login.form-horizontal(role='form', action='/inbox/viewInbox/', method='post')
                         td(style='width: 80%; vertical-align: middle')
@@ -73,22 +72,6 @@ html(lang='en')
                             i.fa.fa-envelope.fa-fw(style='color:#000') &nbsp&nbsp
                             | #{inbox.msg_source}
                         td.text-muted.small(style='vertical-align: middle') #{inbox.msg_time}
-
-
-
-
-
-                      // form#login.form-horizontal(role='form', action='/inbox/inputKey', method='post')
-                      //   tr
-                      //     td(style='width: 50%; vertical-align: middle')
-                      //       i.fa.fa-envelope.fa-fw(style='color:#000') &nbsp&nbsp
-                      //         | #{inbox.msg_source}
-                      //     td.text-muted.small(style='vertical-align: middle') #{inbox.msg_time}
-                      //     td(style='width:10%;')
-                      //       input#message.form-control.input-sm(required="true", placeholder='Key', name='key_sender')
-                      //       input#message.form-control.input-sm(type="hidden", placeholder='Id', name='msg_id', value=inbox.msg_id)
-                          // td(style='vertical-align: middle')
-                          //   button.btn.btn-danger.btn-sm(type='submit', style='background: #C2185B') View Detail
     
     // jQuery
     script(src='/bootstrap-3.3.1/vendor/jquery/jquery.js')

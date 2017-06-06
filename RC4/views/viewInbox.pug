@@ -78,16 +78,19 @@ html(lang='en')
                 form#reply.form-horizontal(role='form', action='/inbox/viewInbox', method='post')
                   .form-group
                   .input-group
-                    input#btn-input.form-control.input-sm(type='text', placeholder='Reply your message here...', name='msg_plain')
-                    span.input-group-btn
-                      button#btn-chat.btn.btn-warning.btn-sm(type='submit', style='background: #C2185B')
-                        | Send
-              //
-                <div class="text-left" style="margin-left: 7px; margin-bottom: 10px">
-                <a class="btn btn-success">Replay</a>
-                </div>
-  
+                    for viewInbox2 in viewInbox
+                      input#date_open.form-control(type="hidden", placeholder='time', name='msg_time', value=date)
+                      input#message_from.form-control(type="hidden", value=login)
+                      input#message_to.form-control(type="hidden", value=viewInbox2.msg_source)
+                      input#message_ori.form-control.input-sm(type='text', placeholder='Reply your message here...')
+                      input#message_c.form-control.input-sm(type='text', placeholder='Reply your message here...', name='msg_plain', style='display:none')
+                      span.input-group-btn
+                        button.btn.btn-default(id='submit', type='button', style='background: #C2185B; color: #fff; font-size: 13px') Send
+                        button.btn.btn-default(id='submitFormBtn', type='submit', style='background: #C2185B; color: #fff; font-size: 13px; display:none') Send
+    
     // jQuery
     script(src='/bootstrap-3.3.1/vendor/jquery/jquery.js')
+    script(src='/bundle.js')
+    script(src='/encrypt.js')
     // Bootstrap Core JavaScript
     script(src='/bootstrap-3.3.1/vendor/bootstrap/js/bootstrap.min.js')

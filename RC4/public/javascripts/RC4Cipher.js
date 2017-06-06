@@ -1,18 +1,11 @@
-// (function (CryptoJS) {
+(function (CryptoJS) {
 
-//     (function () {
+    (function () {
         // Shortcuts
-        console.log("lalala1");
-        var CryptoJS       = require("crypto-js");
         var C              = CryptoJS;
         var C_lib          = C.lib;
         var StreamCipher   = C_lib.StreamCipher;
         var C_algo         = C.algo;
-
-        // console.log(C);
-        // console.log(C_lib);
-        // console.log(StreamCipher);
-        // console.log(C_algo);
 
         /**
          * RC4 stream cipher algorithm.
@@ -20,9 +13,7 @@
 
         // KSA
         var RC4 = C_algo.RC4 = StreamCipher.extend({
-
             _doReset: function () {
-                console.log("lalala2");
                 // Shortcuts
                 var key = this._key;
                 var keyWords = key.words;
@@ -70,7 +61,6 @@
             ivSize: 0
         });
 
-        console.log("lalala TENGAH");
         // PRGA
         function generateKeystreamWord() {
             // Shortcuts
@@ -80,7 +70,7 @@
 
             // Generate keystream word
             var keystreamWord = 0;
-            for (var n = 0; n < str.length; n++) { // n < 4 apaandah, HARUSNYA N<=STRLEN PLAINTEKS
+            for (var n = 0; n < 4; n++) { // n < 4 apaandah, HARUSNYA N<=STRLEN PLAINTEKS
                 i = (i + 1) % 256; // okesip
                 j = (j + S[i]) % 256; // okesip
 
@@ -102,8 +92,6 @@
             this._j = j;
 
             return keystreamWord;
-
-            console.log("lalala3");
         }
          
     //     C.RC4 = StreamCipher._createHelper(RC4);
@@ -130,9 +118,8 @@
     //     var plaintext  = CryptoJS.RC4Drop.decrypt(ciphertext, key, cfg);
          
     //     C.RC4Drop = StreamCipher._createHelper(RC4Drop);
-    // }());
+    }());
 
-    // return CryptoJS.RC4;
-    module.export = CryptoJS.RC4;
+    return CryptoJS.RC4;
 
-// });
+});

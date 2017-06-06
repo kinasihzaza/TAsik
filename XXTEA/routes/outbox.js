@@ -92,9 +92,9 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
 
             var shakeySort = sha1(keySort);
 
-            console.log("string concat sorted and hashed = " + shakeySort);
+            console.log("string concat sorted and hashed = " + keySort);
 
-            var e = xxtea.decryptToString(db_message_plain,shakeySort);
+            var e = xxtea.decryptToString(db_message_plain,keySort);
             var getTime = '' + rows[0].msg_time;
             var time = getTime.substr(0,24);
             global.viewOutbox2 = {

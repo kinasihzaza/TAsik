@@ -13,50 +13,18 @@ var moment     = require('moment');
 
 router.get('/compose', require('../middleware/auth.js'), function(req, res){
     console.log("MASUK FUNGSI GET /COMPOSE");
-     res.render('compose', {
-            'login': req.session.pisang.user_email
+
+    var date = moment().format("YYYY-MM-DD HH:mm:ss");
+
+    res.render('compose', {
+            'login': req.session.pisang.user_email,
+            'date': date
     });
 
 }).post("/compose", multer({ dest: './img/'}).single('fileUploaded'),function(req, res){
-    myDate =  moment().format("YYYY-MM-DD HH:mm:ss");
-
-    str1 = req.session.pisang.user_email;
-    str2 = req.body.msg_target;
-    str3 = myDate;
-    str4 = "TA2017";
-
-    console.log("string 1 = " + str1);
-    console.log("string 2 = " + str2);
-    console.log("string 3 = " + str3);
-    console.log("string 4 = " + str4);
-
-    var stringConcat = str1.concat(str2, str3, str4);
-
-    console.log("string concat = " + stringConcat);
-
-    var sortAlphabets = function(stringConcat) {
-    return stringConcat.split('').sort().join('');
-    };
-
-    var keySort = sortAlphabets(stringConcat);
-
-    console.log("string concat sorted = " + keySort);
-
-    var shakeySort = sha1(keySort);
-
-    console.log("string concat sorted and hashed = " + shakeySort);
-
-    str = req.body.msg_plain;
-    key = shakeySort;
-    const db_message_plain = req.body.msg_plain;
-    var d = xxtea.encryptToString(str,key);
-
-    console.log("KEY COMPOSE : "+key);
-    console.log("Plain TEXT  : " +req.body.msg_plain);
-    console.log("HEXXX ->>>>>>>>> : "+String(d));
-
+    
     var query = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
-    var table = ["message","msg_source","msg_target","msg_plain","msg_time",req.session.pisang.user_email,req.body.msg_target,d, myDate];
+    var table = ["message","msg_source","msg_target","msg_plain","msg_time",req.session.pisang.user_email,req.body.msg_target, req.body.msg_plain, req.body.msg_time];
     query = mysql.format(query,table);
     console.log("DI BAWAH QUERY");
     console.log(query);

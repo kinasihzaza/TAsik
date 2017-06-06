@@ -49,31 +49,30 @@ html(lang='en')
           .col-md-3
             p.lead(style='margin-top: 100px') E-Surat
             .list-group
-              a.list-group-item(href='email.pug') Compose
-              a.list-group-item(href='inbox.pug') Inbox
-              a.list-group-item(href='outbox.pug') Outbox
+              a.list-group-item(href='/email/compose') Compose
+              a.list-group-item(href='/inbox') Inbox
+              a.list-group-item(href='/outbox') Outbox
           .col-md-9(style='margin-top: 149px')
             // /.col-lg-8
             .panel.panel-default
               // /.panel-heading
               .panel-body
-                table.table.table-hover
+                table.table.table-striped
                   thead
                     tr
                       th(style='color: #000') Inbox
-                .list-group
-                  a.list-group-item(href='viewInbox.pug')
-                    i.fa.fa-envelope.fa-fw
-                    |  Nindy
-                    span.pull-right.text-muted.small
-                      em 4 minutes ago
-                  a.list-group-item(href='#')
-                    i.fa.fa-envelope.fa-fw
-                    |  Zaza
-                    span.pull-right.text-muted.small
-                      em 12 minutes ago
+                      th
+                  tbody(style='color: #000')
+                    for inbox in inboxList
+                      tr(style='height: 49px')
+                        form#login.form-horizontal(role='form', action='/inbox/viewInbox/', method='post')
+                        td(style='width: 80%; vertical-align: middle')
+                          a(href='/inbox/viewInbox/'+ inbox.msg_id+'/', style='text-decoration: none; color: #000; font-family: Serif')
+                            i.fa.fa-envelope.fa-fw(style='color:#000') &nbsp&nbsp
+                            | #{inbox.msg_source}
+                        td.text-muted.small(style='vertical-align: middle') #{inbox.msg_time}
     
     // jQuery
-    script(src='js/jquery.js')
+    script(src='/bootstrap-3.3.1/vendor/jquery/jquery.js')
     // Bootstrap Core JavaScript
-    script(src='js/bootstrap.min.js')
+    script(src='/bootstrap-3.3.1/vendor/bootstrap/js/bootstrap.min.js')

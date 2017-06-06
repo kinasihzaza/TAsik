@@ -8,7 +8,6 @@ var utf8        = require('utf8');
 var sha1         = require('sha1');
 var moment      = require('moment');
 
-
 router.get("/", require('../middleware/auth.js'), function(req,res){
     console.log("MASUK FUNGSI GET /INBOX");
     var loginList = [];
@@ -49,6 +48,7 @@ router.get("/", require('../middleware/auth.js'), function(req,res){
         });
     });
 });
+
 router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req, res, next) {
     console.log("MASUK FUNGSI GET /VIEWINBOX");
     var viewInbox = [];
@@ -67,7 +67,7 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
         if(err) {
             return res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {    
-           const db_message_plain       = rows[0].msg_plain;
+            const db_message_plain       = rows[0].msg_plain;
 
             /*Modul For Decrypt By Key*/
             const key_from_sender_db     = rows[0].key_sender;
@@ -78,17 +78,12 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
             str3 = moment(rows[0].msg_time).format("YYYY-MM-DD HH:mm:ss");
             str4 = "TA2017";
 
-            console.log("string 1 = " + str1);
-            console.log("string 2 = " + str2);
-            console.log("string 3 = " + str3);
-            console.log("string 4 = " + str4);
-
             var stringConcat = str1.concat(str2, str3, str4);
 
             console.log("string concat = " + stringConcat);
 
             var sortAlphabets = function(stringConcat) {
-            return stringConcat.split('').sort().join('');
+                return stringConcat.split('').sort().join('');
             };
 
             var keySort = sortAlphabets(stringConcat);
@@ -99,9 +94,11 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
 
             console.log("string concat sorted and hashed = " + shakeySort);
 
-            var plaintext     = CryptoJS.RC4.decrypt(db_message_plain.toString(), shakeySort.toString()).toString(CryptoJS.enc.Utf8);
+            var plaintext     = CryptoJS.RC4.decrypt(db_message_plain.toString(),keySort).toString(CryptoJS.enc.Utf8);
 
             console.log("MASUK SINI bawah dekrip");
+
+            var date = moment().format("YYYY-MM-DD HH:mm:ss");
             
             /*End Of Modul*/
             var getTime = '' + rows[0].msg_time;
@@ -149,7 +146,8 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
                     res.render('viewInbox', {
                         'viewInbox': viewInbox,
                         'viewAttachment' : viewAttachment,
-                        'login': req.session.pisang.user_email
+                        'login': req.session.pisang.user_email,
+                        'date': date
                     });    
                 }
             });
@@ -158,44 +156,15 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
 
 }).post("/viewInbox", require('../middleware/auth.js'), function(req, res, next){
 
-    myDate =  moment().format("YYYY-MM-DD HH:mm:ss");
-
+    // myDate =  moment().format("YYYY-MM-DD HH:mm:ss");
 
     str1vi = req.session.pisang.user_email;
     str2vi = viewInbox2.msg_source;
-    str3vi = myDate;
+    str3vi = req.body.msg_time;
     str4vi = "TA2017";
 
-    console.log("string 1 = " + str1vi);
-    console.log("string 2 = " + str2vi);
-    console.log("string 3 = " + str3vi);
-    console.log("string 4 = " + str4vi);
-
-    var stringConcat = str1vi.concat(str2vi, str3vi, str4vi);
-
-    console.log("string concat = " + stringConcat);
-
-    var sortAlphabets = function(stringConcat) {
-    return stringConcat.split('').sort().join('');
-    };
-
-    var keySort = sortAlphabets(stringConcat);
-
-    console.log("string concat sorted = " + keySort);
-
-    var shakeySort = sha1(keySort);
-
-    console.log("string concat sorted and hashed = " + shakeySort);
-
-    const db_message_plain  = req.body.msg_plain;
-    var cipher_config       = shakeySort;
-    var ciphertext          = CryptoJS.RC4.encrypt(db_message_plain, cipher_config);
-    
-    console.log("INI CIPHERNYA >>>>>> " + ciphertext);
-    console.log("INI KEYNYA  >>>>>> " + cipher_config);
-
     var query  = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
-    var table  = ["message","msg_source","msg_target","msg_plain","msg_time",str1vi,str2vi,ciphertext.toString(),myDate];
+    var table  = ["message","msg_source","msg_target","msg_plain","msg_time",str1vi,str2vi,req.body.msg_plain, str3vi];
     
     query  = mysql.format(query,table);
     console.log(query);

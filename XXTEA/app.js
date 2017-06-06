@@ -83,8 +83,8 @@ app.listen(3232, function(){
   console.log("Listening on port " + 3232);
 });
 
-https.createServer(options, app).listen(3131, function() {
-    console.log("HTTPS: listening on port " + 3131);
-});
+// https.createServer(options, app).listen(3131, function() {
+//     console.log("HTTPS: listening on port " + 3131);
+// });
 
 module.exports = app;

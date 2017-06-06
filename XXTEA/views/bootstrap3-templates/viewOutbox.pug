@@ -8,18 +8,18 @@ html(lang='en')
     meta(name='author', content='')
     title E-Surat App
     // Bootstrap core CSS
-    link(href=`${pathToAssets}/vendor/bootstrap/css/bootstrap.min.css`, rel='stylesheet')
+    link(href=`/bootstrap-3.3.1/vendor/bootstrap/css/bootstrap.min.css`, rel='stylesheet')
     <!-- link(href='vendor/bootstrap/css/bootstrap.min.css', rel='stylesheet') -->
     // Custom fonts for this template
-    link(rel='stylesheet', href=`${pathToAssets}/vendor/font-awesome/css/font-awesome.min.css`)
-    link(rel='stylesheet', href=`${pathToAssets}/vendor/simple-line-icons/css/simple-line-icons.css`)
+    link(rel='stylesheet', href=`/bootstrap-3.3.1/vendor/font-awesome/css/font-awesome.min.css`)
+    link(rel='stylesheet', href=`/bootstrap-3.3.1/vendor/simple-line-icons/css/simple-line-icons.css`)
     link(href=`https://fonts.googleapis.com/css?family=Lato`, rel='stylesheet')
     link(href=`https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900`, rel='stylesheet')
     link(href=`https://fonts.googleapis.com/css?family=Muli`, rel='stylesheet')
     // Plugin CSS
-    link(rel='stylesheet', href=`${pathToAssets}/device-mockups/device-mockups.min.css`)
+    link(rel='stylesheet', href=`/bootstrap-3.3.1/device-mockups/device-mockups.min.css`)
     // Custom styles for this template
-    link(href=`${pathToAssets}/css/new-age.min.css`, rel='stylesheet')
+    link(href=`/bootstrap-3.3.1/css/new-age.min.css`, rel='stylesheet')
     // Temporary navbar container fix
     style.
       .navbar-toggler {
@@ -40,57 +40,50 @@ html(lang='en')
           .navbar-header
             button.navbar-toggle(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1')
               
-            a.navbar-brand(href='#') E-Surat
+            a.navbar-brand(href='/inbox') E-Surat
               i.fa.fa-envelope-square.fa-fw(style='margin-left:-90px')
-            a.navbar-brand(href='#', style='margin-left: 1030px') Logout
-          // Collect the nav links, forms, and other content for toggling
-          //
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-            <li>
-            <a href="#">About</a>
-            </li>
-            <li>
-            <a href="#">Services</a>
-            </li>
-            <li>
-            <a href="#">Contact</a>
-            </li>
-            </ul>
-            </div>
-          // /.navbar-collapse
-        // /.container
+            a.navbar-brand(style='color:#fff; margin-left:855px; font-size: 14px') #{login}
+            a.navbar-brand(href='/logout') |  Logout
+
       // Page Content
       .container
         .row
           .col-md-3
             p.lead(style='margin-top: 100px') E-Surat
             .list-group
-              a.list-group-item(href='email.pug') Compose
-              a.list-group-item(href='inbox.pug') Inbox
-              a.list-group-item(href='outbox.pug') Outbox
+              a.list-group-item(href='/email/compose') Compose
+              a.list-group-item(href='/inbox') Inbox
+              a.list-group-item(href='/outbox') Outbox
           .col-md-9(style='margin-top: 149px')
             .thumbnail
               .caption-full(style='color: #000; margin-top: 20px; margin-left: 20px')
-                h4(style='color: #C2185B') Nindy
-                  a(href='outbox.pug', style='color: #C2185B')
-                    i.fa.fa-arrow-circle-left.fa-fw.fa-lg(style='margin-left: 720px')
-                p nindyasaridu@gmail.com
-                p(style='font-size: 15px')
-                  | Oqeh
+                for viewOutbox2 in viewOutbox
+                  h4(style='color: #C2185B; font-size:20px') #{viewOutbox2.msg_target}
+                    a(href='/outbox', style='color: #C2185B')
+                      i.fa.fa-arrow-circle-left.fa-fw.fa-lg(style='margin-left: 600px')
+                  p(style='font-size: 10px')
+                    | #{viewOutbox2.msg_time}
+                    br
+                  p(style='font-size: 25px')
+                    | #{viewOutbox2.msg_plain}
+                for viewAttachment2 in viewAttachment
+                  p(style='font-size:15px') Attachment: 
+                    a(style='font-size:15px; margin-bottom:100px', href='/outbox/download/'+ viewAttachment2.id_file)
+                      | #{viewAttachment2.path_file} 
+                  p 
               
-              .panel-footer
-                .input-group
-                  input#btn-input.form-control.input-sm(type='text', placeholder='Replay your message here...')
-                  span.input-group-btn
-                    button#btn-chat.btn.btn-warning.btn-sm(style='background: #C2185B')
-                      | Send
+              //- .panel-footer
+              //-   .input-group
+              //-     input#btn-input.form-control.input-sm(type='text', placeholder='Replay your message here...')
+              //-     span.input-group-btn
+              //-       button#btn-chat.btn.btn-warning.btn-sm(style='background: #C2185B')
+              //-         | Send
               //
                 <div class="text-left" style="margin-left: 7px; margin-bottom: 10px">
                 <a class="btn btn-success">Replay</a>
                 </div>
     
     // jQuery
-    script(src='js/jquery.js')
+    script(src='/bootstrap-3.3.1/vendor/jquery/jquery.js')
     // Bootstrap Core JavaScript
-    script(src='js/bootstrap.min.js')
+script(src='/bootstrap-3.3.1/vendor/bootstrap/js/bootstrap.min.js')

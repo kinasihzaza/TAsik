@@ -88,10 +88,10 @@ router.get('/viewOutbox/:msg_id/', require('../middleware/auth.js'), function(re
 
             var shakeySort = sha1(keySort);
 
-            console.log("string concat sorted and hashed = " + shakeySort);
+            console.log("string concat sorted and hashed = " + keySort);
 
             var dekrip              = db_message_plain.toString();
-            var plaintext           = CryptoJS.RC4.decrypt(dekrip, shakeySort).toString(CryptoJS.enc.Utf8);
+            var plaintext           = CryptoJS.RC4.decrypt(dekrip, keySort).toString(CryptoJS.enc.Utf8);
 
             var getTime = '' + rows[0].msg_time;
             var time = getTime.substr(0,24);

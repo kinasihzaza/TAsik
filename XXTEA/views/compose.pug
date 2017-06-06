@@ -57,15 +57,15 @@ html(lang='en')
           .col-md-9(style='margin-top: 149px')
             .thumbnail
               .caption-full
-                form#compose.form-horizontal(role='form', action='/email/compose', enctype="multipart/form-data", method='post', style='margin-top: 15px; margin-right: 25px')
+                form#compose_form2.form-horizontal(role='form', action='/email/compose', enctype="multipart/form-data", method='post', style='margin-top: 15px; margin-right: 25px')
                   .form-group
                     label.control-label.col-sm-2(for='email', style='color: #000') To:
                     .col-sm-10
-                      input#message.form-control(type='email', placeholder='Enter email to', name='msg_target')
-                  // .form-group
-                  //   label.control-label.col-sm-2(for='email', style='color: #000') Key:
-                  //   .col-sm-10
-                  //     input#message.form-control(required="true", placeholder='Enter key', name='key_sender')
+                      input#message_to2.form-control(type='email', placeholder='Enter email to', name='msg_target')
+                  .form-group
+                    .col-sm-10
+                      input#date_open2.form-control(type="hidden", placeholder='time', name='msg_time', value=date)
+                      input#message_from2.form-control(type="hidden", value=login)
                   .form-group
                     label.control-label.col-sm-2(for='email', style='color: #000') Attachment:
                     .col-sm-10
@@ -73,13 +73,20 @@ html(lang='en')
                   .form-group
                     label.control-label.col-sm-2(for='pwd', style='color: #000') Message:
                     .col-sm-10
-                      textarea#message.form-control(rows='5', placeholder='Enter message', name='msg_plain')
+                      textarea#message_ori2.form-control(rows='5', placeholder='Enter message')
+                      textarea#message_c2.form-control(type="hidden", rows='5', placeholder='Enter message', name='msg_plain', style='display:none') 
                   .form-group
                     .col-sm-offset-2.col-sm-10
-                      button.btn.btn-default(type='submit', style='background: #C2185B; color: #fff; font-size: 13px') Send
+                      button.btn.btn-default(id='submit2', type='button', style='background: #C2185B; color: #fff; font-size: 13px') Send
+                      button.btn.btn-default(id='submitFormBtn2', type='submit', style='background: #C2185B; color: #fff; font-size: 13px; display:none') Send
 
     
     // jQuery
-    script(src='/bootstrap-3.3.1/js/jquery.js')
+    script(src='/bootstrap-3.3.1/vendor/jquery/jquery.js')
+    script(src='/bundle.js')
+    script(src='/enkrip.js')
     // Bootstrap Core JavaScript
     script(src='/bootstrap-3.3.1/js/bootstrap.min.js')
+    //- script(src='/javascripts/xxtea.js')
+    //- script(src='/javascripts/enc.js')
+
