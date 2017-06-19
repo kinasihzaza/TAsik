@@ -11,7 +11,7 @@ $(document).on('click','#submit', function(e){
     };
     
     key  = sortAlphabets(key);
-    console.log(key)
+    console.log(key);
 
     text_ori   = window.encrypt(text_ori, key);
     $('#message_c').val(text_ori);

@@ -4,6 +4,7 @@ window.encrypt = function(message, key){
 	//function encrypt(message, key){
 	var ciphertext = xxtea.encryptToString(message, key);
 	return ciphertext;
+	console.log('ciphertext = ' + ciphertext);
 }
 
 window.decrypt = function(ciphertext, key){

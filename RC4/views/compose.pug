@@ -42,7 +42,7 @@ html(lang='en')
               
             a.navbar-brand(href='/inbox') E-Surat
               i.fa.fa-envelope-square.fa-fw(style='margin-left:-90px')
-            a.navbar-brand(style='color:#fff; margin-left:855px; font-size: 14px') #{login}
+            a.navbar-brand(style='color:#fff; margin-left:800px; font-size: 14px') #{login}
             a.navbar-brand(href='/logout') |  Logout
           
       // Page Content
@@ -77,6 +77,7 @@ html(lang='en')
                       textarea#message_c.form-control(type="hidden", rows='5', placeholder='Enter message', name='msg_plain', style='display:none') 
                   .form-group
                     .col-sm-offset-2.col-sm-10
+                      //- button.btn.btn-default(type='submit', style='background: #C2185B; color: #fff; font-size: 13px') Send
                       button.btn.btn-default(id='submit', type='button', style='background: #C2185B; color: #fff; font-size: 13px') Send
                       button.btn.btn-default(id='submitFormBtn', type='submit', style='background: #C2185B; color: #fff; font-size: 13px; display:none') Send
 

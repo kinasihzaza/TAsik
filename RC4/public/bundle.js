@@ -32,6 +32,7 @@
                     // key[i]  = ord(key_chr)
                     S[i] = i;
                 }
+                console.log("init sBOX")
 
                 // Key setup
                 // Permutasi sbox

@@ -4,14 +4,14 @@ var router = express.Router();
 var connection = require('../database.js');
 
     router.get("/",function(req,res){
-        console.log("MASUK FUNGSI GET /");
+        //console.log("MASUK FUNGSI GET /");
         res.render('index');
     });
 
 
     router.get("/login", function(req, res){
         console.log(req.session);
-        console.log("MASUK FUNGSI GET /LOGIN");
+        //console.log("MASUK FUNGSI GET /LOGIN");
         res.render('login');
         req.session.pisang = "login";
 

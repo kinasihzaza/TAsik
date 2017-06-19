@@ -12,7 +12,7 @@ var moment     = require('moment');
 
 
 router.get('/compose', require('../middleware/auth.js'), function(req, res){
-    console.log("MASUK FUNGSI GET /COMPOSE");
+    //console.log("MASUK FUNGSI GET /COMPOSE");
 
     var date = moment().format("YYYY-MM-DD HH:mm:ss");
 
@@ -26,15 +26,15 @@ router.get('/compose', require('../middleware/auth.js'), function(req, res){
     var query = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
     var table = ["message","msg_source","msg_target","msg_plain","msg_time",req.session.pisang.user_email,req.body.msg_target, req.body.msg_plain, req.body.msg_time];
     query = mysql.format(query,table);
-    console.log("DI BAWAH QUERY");
-    console.log(query);
+    //console.log("DI BAWAH QUERY");
+    //console.log(query);
 
     connection.query(query,function(err,rows){
         if(err) {
             res.json({"Error" : true, "Message" : "Error executing MySQL query"});
         } else {
-            console.log("MASUK FUNGSI POST /UPLOAD");
-            console.log(rows.insertId);
+            //console.log("MASUK FUNGSI POST /UPLOAD");
+            //console.log(rows.insertId);
 
             if (req.file) {
                 console.log(req.file);
@@ -50,7 +50,7 @@ router.get('/compose', require('../middleware/auth.js'), function(req, res){
                         if(err) {
                             res.json({"Error" : true, "Message" : "Error executing MySQL query"});
                         } else {
-                            console.log(rows);
+                            //console.log(rows);
                         }
                     });
                 });

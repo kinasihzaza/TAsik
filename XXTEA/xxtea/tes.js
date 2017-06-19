@@ -21,7 +21,8 @@ function toUint8Array(v, includeLength) {
 }
 
 function toUint32Array(bytes, includeLength) {
-    var length = bytes.length;                      //hitung panjang dari parameter (bytes)     
+    var length = bytes.length;   
+    console.log('INI BYTESSSSS'+bytes);                   //hitung panjang dari parameter (bytes)     
     var n = length >> 2;                            //geser kanan 2
     if ((length & 3) !== 0) {                       //if lenght di and dengan 3(011) != 0 n++
         ++n;
@@ -37,6 +38,7 @@ function toUint32Array(bytes, includeLength) {
     for (var i = 0; i < length; ++i) {              //
         v[i >> 2] |= bytes[i] << ((i & 3) << 3);    //
     }
+    console.log('INI V CUY WOY ' + v);
     return v;
 }
 
@@ -61,7 +63,12 @@ function encryptUint32Array(v, k) {
     sum = 0;
     for (q = Math.floor(6 + 52/length) | 0; q > 0; --q) {
         sum += delta;
+	console.log('ini sum'+sum);
         e = sum >>> 2 & 3;
+var x = sum >>> 2
+var oi = x & 3
+console.log(oi)
+console.log(x)
         console.log('ini e');
         console.log(e);
         for (p = 0; p < n; ++p) {
@@ -315,7 +322,7 @@ module.exports = Object.create(null, {
 
 
 var str = "Hello World!";
-var key = "123456789012345";
+var key = "123456789012345123789";
 var encrypt_data = encryptToString(str, key);
 console.log('Hasil encrypt')
 console.log(encrypt_data);

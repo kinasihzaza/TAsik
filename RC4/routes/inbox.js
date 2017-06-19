@@ -139,7 +139,8 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
                         res.render('viewInbox', {
                             'viewInbox': viewInbox,
                             'viewAttachment' : viewAttachment,
-                            'login': req.session.pisang.user_email
+                            'login': req.session.pisang.user_email,
+                            'date': date
                         }); 
                     } 
 
@@ -162,6 +163,8 @@ router.get('/viewInbox/:msg_id/', require('../middleware/auth.js'), function(req
     str2vi = viewInbox2.msg_source;
     str3vi = req.body.msg_time;
     str4vi = "TA2017";
+
+    console.log("INI WAKTUNYAAAAA >>> " + str3vi);
 
     var query  = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
     var table  = ["message","msg_source","msg_target","msg_plain","msg_time",str1vi,str2vi,req.body.msg_plain, str3vi];
